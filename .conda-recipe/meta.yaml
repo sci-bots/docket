@@ -1,0 +1,29 @@
+# source will be downloaded prior to filling in jinja templates
+# Example assumes that this folder has setup.py in it
+source:
+  git_url: ../
+
+package:
+  name: docket
+{% if GIT_DESCRIBE_NUMBER > '0' %}
+  version: {{ GIT_DESCRIBE_TAG[1:] }}.{{ GIT_DESCRIBE_NUMBER }}
+{% else %}
+  version: {{ GIT_DESCRIBE_TAG[1:] }}.0
+{% endif %}
+
+#requirements:
+  #build:
+    #- pip
+    #- python 2.7*
+
+  #run:
+    #- pip
+    #- python 2.7*
+
+test:
+  imports:
+    - docket
+
+about:
+  home: https://github.com/sci-bots/docket
+  license: BSD
