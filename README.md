@@ -14,6 +14,7 @@ Usage
 
 ### Render single string to PNG
 
+```python
 >>> import docket
 >>>
 >>> width = 600  # Explicit width in pixels
@@ -22,11 +23,13 @@ Usage
 >>>
 >>> with open('output.png', 'wb') as image_file:
 >>>     surface.write_to_png(image_file)
+```
 
 **Note: Any system font name may be specified, e.g., `font='Arial'`.**
 
 ### Render data table to PNG:
 
+```python
 >>> import docket
 >>> import pandas as pd
 >>>
@@ -43,6 +46,7 @@ Usage
 >>>
 >>> with open('output.png', 'wb') as image_file:
 >>>     surface.write_to_png(image_file)
+```
 
 **Note: Any system font name may be specified, e.g., `font='Arial'`.**
 
@@ -52,6 +56,7 @@ Width/height may be specified as [`pint`][pint] quantities.
 
 For example:
 
+```python
 >>> import docket
 >>>
 >>> # Fit to width of 20 mm (assuming 300 pixels per inch).
@@ -60,6 +65,7 @@ For example:
 >>> shape, surface = docket.render_text('hello, world!', width=width)
 >>> shape
 <Quantity([ 236.22047244   72.        ], 'pixel')>
+```
 
 -------------------------------------------------------------------------------
 
