@@ -23,6 +23,7 @@ requirements:
     - pint
     - pip
     - pycairo-gtk2
+    - pywin32  # [win]
 
   run:
     - numpy
@@ -31,6 +32,7 @@ requirements:
     - pint
     - pip
     - pycairo-gtk2
+    - pywin32  # [win]
 
 test:
   requires:
