@@ -1,3 +1,8 @@
+{% if GIT_DESCRIBE_NUMBER > '0' %}
+{% set GIT_VERSION = GIT_DESCRIBE_TAG[1:] + '.post' + GIT_DESCRIBE_NUMBER %}
+{% else %}
+{% set GIT_VERSION = GIT_DESCRIBE_TAG[1:] %}
+{% endif %}
 # source will be downloaded prior to filling in jinja templates
 # Example assumes that this folder has setup.py in it
 source:
@@ -5,22 +10,31 @@ source:
 
 package:
   name: docket
-{% if GIT_DESCRIBE_NUMBER > '0' %}
-  version: {{ GIT_DESCRIBE_TAG[1:] }}.{{ GIT_DESCRIBE_NUMBER }}
-{% else %}
-  version: {{ GIT_DESCRIBE_TAG[1:] }}.0
-{% endif %}
+  version: {{ GIT_VERSION }}
 
-#requirements:
-  #build:
-    #- pip
-    #- python 2.7*
+build:
+  script: python setup.py install --single-version-externally-managed --record record.txt
 
-  #run:
-    #- pip
-    #- python 2.7*
+requirements:
+  build:
+    - numpy
+    - pandas
+    - pillow
+    - pint
+    - pip
+    - pycairo-gtk2
+
+  run:
+    - numpy
+    - pandas
+    - pillow
+    - pint
+    - pip
+    - pycairo-gtk2
 
 test:
+  requires:
+    - nose
   imports:
     - docket
 
