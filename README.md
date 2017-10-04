@@ -66,7 +66,7 @@ results in the following output:
 >>> import pandas as pd
 >>>
 >>>
->>> width = 600  # Explicit width in pixels
+>>> width = 250  # Explicit width in pixels
 >>>
 >>> df_data = pd.DataFrame([['Callie', 'Ernst'],
 ...                         ['Polly', 'Guerrero'],
@@ -74,8 +74,11 @@ results in the following output:
 ...                         ['Tomasa', 'Rivera']],
 ...                         columns=['first_name', 'last_name'])
 >>>
->>> shape, surface = docket.render_frame_text(df_data, width, font='Serif')
+>>> shape, surface = docket.render_frame_text(df_data, width)
 ```
+
+The code above results in the following output:  
+![Data table](docs/images/data-table.png)
 
 ### Specify width as `pint` quantity
 
