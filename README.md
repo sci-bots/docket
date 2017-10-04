@@ -25,6 +25,9 @@ Usage
 >>>     surface.write_to_png(image_file)
 ```
 
+The code above results in the following output:  
+![Single string](docs/images/single-string.png)
+
 **Note: Any system font name may be specified, e.g., `font='Arial'`.**
 
 ### Render list of strings
@@ -34,8 +37,6 @@ Usage
 >>>
 >>> shape, surface = docket.render_text(['hello, world!', 'goodbye!'])
 ```
-
-**Note: Any system font name may be specified, e.g., `font='Arial'`.**
 
 ### Render data table
 
@@ -54,8 +55,6 @@ Usage
 >>>
 >>> shape, surface = docket.render_frame_text(df_data, width, font='Serif')
 ```
-
-**Note: Any system font name may be specified, e.g., `font='Arial'`.**
 
 ### Specify width as `pint` quantity
 
