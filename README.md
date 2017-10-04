@@ -1,3 +1,20 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Docket](#docket)
+  - [Usage](#usage)
+    - [Render single string to PNG](#render-single-string-to-png)
+    - [Copy resulting surface image to system clipboard](#copy-resulting-surface-image-to-system-clipboard)
+    - [Render list of strings](#render-list-of-strings)
+    - [Render data table](#render-data-table)
+    - [Specify width as `pint` quantity](#specify-width-as-pint-quantity)
+  - [Install](#install)
+  - [License](#license)
+  - [Contributors](#contributors)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Docket #
 
 Render text for stickers, labels, etc.
