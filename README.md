@@ -27,7 +27,17 @@ Usage
 
 **Note: Any system font name may be specified, e.g., `font='Arial'`.**
 
-### Render data table to PNG:
+### Render list of strings
+
+```python
+>>> import docket
+>>>
+>>> shape, surface = docket.render_text(['hello, world!', 'goodbye!'])
+```
+
+**Note: Any system font name may be specified, e.g., `font='Arial'`.**
+
+### Render data table
 
 ```python
 >>> import docket
@@ -43,9 +53,6 @@ Usage
 ...                         columns=['first_name', 'last_name'])
 >>>
 >>> shape, surface = docket.render_frame_text(df_data, width, font='Serif')
->>>
->>> with open('output.png', 'wb') as image_file:
->>>     surface.write_to_png(image_file)
 ```
 
 **Note: Any system font name may be specified, e.g., `font='Arial'`.**
@@ -65,6 +72,8 @@ For example:
 >>> shape, surface = docket.render_text('hello, world!', width=width)
 >>> shape
 <Quantity([ 236.22047244   72.        ], 'pixel')>
+>>> shape.magnitude
+array([ 236.22047244,   72.        ])
 ```
 
 -------------------------------------------------------------------------------
