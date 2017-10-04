@@ -367,8 +367,13 @@ def render_frame_text(df_data, width, font='Serif 12', column_padding=.1,
     --------
     :func:`fit_text`, :func:`render_text`
     '''
-    align = kwargs.get('align', 'left')
+    align = kwargs.pop('align', 'left')
     line_spacing = kwargs.get('line_spacing', 1.5)
+
+    if isinstance(font, types.StringTypes):
+        font = pango.FontDescription(font)
+        if font.get_size() == 0:
+            font.set_size(12 * pango.SCALE)
 
     if isinstance(width, UREG.Quantity):
         width = width.to('pixel') / UREG.pixel
@@ -378,26 +383,27 @@ def render_frame_text(df_data, width, font='Serif 12', column_padding=.1,
 
     columns = df_data.columns
     column_widths = pd.Series({column_i: fit_text(df_data[column_i],
-                                                  font=font)[1]
+                                                  font=font, **kwargs)[1]
                                .width.max() for column_i in columns})
     column_widths *= width / ((1 + column_padding) * column_widths.sum())
     column_widths = column_widths[columns]
 
-    font = None
     height = None
+    scaled_font = None
 
     for column_i, width_i in column_widths.iteritems():
         lines_i = df_data[column_i]
 
-        font_i, df_sizes_i = fit_text(lines_i, width=width_i,
+        font_i, df_sizes_i = fit_text(lines_i, width=width_i, font=font,
                                       line_spacing=line_spacing)
 
-        if font is None or font_i.get_size() < font.get_size():
-            font = font_i
+        if scaled_font is None or font_i.get_size() < scaled_font.get_size():
+            scaled_font = font_i
         height_i = df_sizes_i.height.max() * df_sizes_i.shape[0] * line_spacing
         if height is None or height_i > height:
             height = height_i
 
+    font = scaled_font
     column_widths *= (1 + column_padding)
     column_offsets = column_widths.cumsum()
     column_offsets.values[:] = np.roll(column_offsets.values, 1)
@@ -410,7 +416,7 @@ def render_frame_text(df_data, width, font='Serif 12', column_padding=.1,
     for column_i, offset_i in column_offsets.iteritems():
         lines_i = df_data[column_i]
 
-        font_i, df_sizes_i = fit_text(lines_i, font=font)
+        font_i, df_sizes_i = fit_text(lines_i, font=font, **kwargs)
 
         slack_i = column_widths[column_i] - df_sizes_i.width.max()
 
@@ -423,6 +429,6 @@ def render_frame_text(df_data, width, font='Serif 12', column_padding=.1,
         shape_i, surface_i = render_text(lines_i, font=font,
                                          offset=(offset_i, 0), align=align,
                                          stroke=1, fill=None,
-                                         surface=surface)
+                                         surface=surface, **kwargs)
     shape = np.array([width, height]) * UREG.pixel
     return shape, surface
