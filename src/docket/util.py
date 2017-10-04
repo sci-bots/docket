@@ -6,7 +6,7 @@ from PIL import Image
 import numpy as np
 
 
-__all__ = ['plot_surface']
+__all__ = ['plot_surface', 'to_array', 'to_clipboard']
 
 
 def to_array(surface):
@@ -51,3 +51,30 @@ def plot_surface(surface, axis=None):
         fig, axis = mpl.pyplot.subplots()
     axis.imshow(data)
     return axis
+
+
+def to_clipboard(surface):
+    '''
+    Copy bitmap image to clipboard.
+
+    Parameters
+    ----------
+    surface : pango.ImageSurface
+        Pango image surface to draw.
+    '''
+    if platform.system() != 'Windows':
+        raise RuntimeError('The `to_clipboard` function is currently only '
+                           'supported on Windows.')
+
+    import win32clipboard
+
+    data = to_array(surface)
+
+    with Image.fromarray(data) as image:
+        with io.BytesIO() as output:
+            image.convert('RGB').save(output, 'BMP')
+            win32clipboard.OpenClipboard()
+            win32clipboard.EmptyClipboard()
+            win32clipboard.SetClipboardData(win32clipboard.CF_DIB,
+                                            output.getvalue()[14:])
+            win32clipboard.CloseClipboard()
