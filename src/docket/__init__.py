@@ -17,6 +17,25 @@ UREG = pint.UnitRegistry()
 
 
 def text_size(text, font='Serif 12'):
+    '''
+    Parameters
+    ----------
+    text : str or list-like
+        Text to render and calculate size of.
+
+        If a list is provided, calculate the rendered size of each entry in the
+        list.
+
+    Returns
+    -------
+    pd.Series or pd.DataFrame
+        If :data:`text` is a string, return Pandas series containing ``width``
+        and ``height`` (in pixels).
+
+        If :data:`text` is list-like, return Pandas data frame containing
+        ``width`` and ``height`` columns, with each row indexed by the
+        corresponding text string.
+    '''
     if isinstance(font, types.StringTypes):
         font = pango.FontDescription(font)
 
@@ -51,6 +70,20 @@ def text_size(text, font='Serif 12'):
 
 
 def pixel_to_pt_scale(text, font='Serif'):
+    '''
+    Estimate the number of pixels/pt for width and height.
+
+    Parameters
+    ----------
+    text : str or list-like
+        Text to use to compute the pixel to pt scale
+
+    Returns
+    -------
+    pd.Series
+        Pandas series containing ``width`` and ``height`` ratios from pixels to
+        pt.
+    '''
     if isinstance(font, types.StringTypes):
         font = pango.FontDescription(font)
     else:
@@ -72,6 +105,29 @@ def pixel_to_pt_scale(text, font='Serif'):
 
 def fit_text(text, font='Serif 12', width=None, height=None,
              line_spacing=1.5):
+    '''
+    Fit the specified text based on the specified font, width, and height.
+
+    Parameters
+    ----------
+    text : str or list-like
+        Text to fit into width/height.
+    font : pango.FontDescription or str, optional
+        Pango font description or string, e.g., ``"Serif", "Arial 14"``, etc.
+    width : float, optional
+        Width to fit text into.
+    height : float, optional
+        Height to fit text into.
+    line_spacing : float, optional
+        Line height relative to maximum text height.
+
+    Returns
+    -------
+    pango.FontDescription, pandas.DataFrame
+        The font description (including font size) and a Pandas data frame
+        containing ``width`` and ``height`` columns of the fitted text
+        dimensions, where each row is indexed by the corresponding text string.
+    '''
     if isinstance(text, types.StringTypes):
         text = [text]
 
@@ -122,6 +178,64 @@ def fit_text(text, font='Serif 12', width=None, height=None,
 
 def render_text(text, align='left', surface=None, stroke=(0, 0, 0),
                 fill=(1, 1, 1), offset=None, **kwargs):
+    '''
+    Render the specified text.
+
+    Parameters
+    ----------
+    text : str or list-like
+        Text to render.
+    align : str, optional
+        Text alignment.  One of `left`, `center`, `right`.
+
+        Default: `left`
+    surface : pango.Surface, optional
+        Pango surface to render on to.
+
+        If not specified, create a :class:`pango.ImageSurface` and
+        automatically size to fitted text.
+    stroke : float or tuple, optional
+        Stroke color, either as grayscale between ``0-1.0``, or RGB tuple.
+
+        Default: ``(0, 0, 0)``, i.e., black.
+    fill : float or tuple, optional
+        Stroke color, either as grayscale between ``0-1.0``, or RGB tuple.
+
+        Default: ``(1, 1, 1)``, i.e., white.
+    offset : tuple, optional
+        Translate rendered text by x/y offset.
+    width : float or UREG.Quantity, optional
+        Width to fit text into.
+
+        If specified as a :class:`UREG.Quantity`, automatically translate to
+        pixel units.
+    height : float or UREG.Quantity, optional
+        Height to fit text into.
+
+        If specified as a :class:`UREG.Quantity`, automatically translate to
+        pixel units.
+    **kwargs
+        Additional keyword arguments passed to :func:`fit_text`.
+
+    Returns
+    -------
+    shape, surface : UREG.Quantity array-like, pango.Surface
+        Shape (i.e., width and height) and surface with rendered text drawn.
+
+        Shape is in units of "pixel", but can be converted to absolute
+        dimensions for a given pixels per inch, e.g., for 600 PPI:
+
+            (shape / (600 * docket.UREG.PPI)).to('mm')
+
+        Pango surface can, for example, be written to a `png` file:
+
+            with open('output.png', 'wb') as image_file:
+                surface.write_to_png(image_file)
+
+    See also
+    --------
+    :func:`fit_text`, :func:`render_frame_text`
+    '''
     if isinstance(text, types.StringTypes):
         lines = [text]
     else:
@@ -211,6 +325,29 @@ def render_text(text, align='left', surface=None, stroke=(0, 0, 0),
 def render_frame_text(df_data, width, font='Serif 12', column_padding=.1,
                       surface=None, **kwargs):
     '''
+    Parameters
+    ----------
+    text : pandas.DataFrame
+        Table of value to render (as text).
+    width : float or UREG.Quantity
+        Width to fit text into.
+
+        If specified as a :class:`UREG.Quantity`, automatically translate to
+        pixel units.
+    font : pango.FontDescription or str, optional
+        Pango font description or string, e.g., ``"Serif", "Arial 14"``, etc.
+    column_padding : float, optional
+        Fraction of total surface width to reserve for padding between columns.
+
+        Default: 0.1, i.e., 10%
+    surface : pango.Surface, optional
+        Pango surface to render on to.
+
+        If not specified, create a :class:`pango.ImageSurface` and
+        automatically size to fitted text.
+    **kwargs
+        Additional keyword arguments passed to :func:`render_text`.
+
     Returns
     -------
     shape, surface : UREG.Quantity array-like, pango.Surface
@@ -225,6 +362,10 @@ def render_frame_text(df_data, width, font='Serif 12', column_padding=.1,
 
             with open('output.png', 'wb') as image_file:
                 surface.write_to_png(image_file)
+
+    See also
+    --------
+    :func:`fit_text`, :func:`render_text`
     '''
     align = kwargs.get('align', 'left')
     line_spacing = kwargs.get('line_spacing', 1.5)
