@@ -370,6 +370,9 @@ def render_frame_text(df_data, width, font='Serif 12', column_padding=.1,
     align = kwargs.pop('align', 'left')
     line_spacing = kwargs.get('line_spacing', 1.5)
 
+    fit_text_kwargs = {'height': kwargs.get('height', None),
+                       'line_spacing': line_spacing}
+
     if isinstance(font, types.StringTypes):
         font = pango.FontDescription(font)
         if font.get_size() == 0:
@@ -383,7 +386,7 @@ def render_frame_text(df_data, width, font='Serif 12', column_padding=.1,
 
     columns = df_data.columns
     column_widths = pd.Series({column_i: fit_text(df_data[column_i],
-                                                  font=font, **kwargs)[1]
+                                                  font=font)[1]
                                .width.max() for column_i in columns})
     column_widths *= width / ((1 + column_padding) * column_widths.sum())
     column_widths = column_widths[columns]
@@ -413,10 +416,13 @@ def render_frame_text(df_data, width, font='Serif 12', column_padding=.1,
         surface = cairo.ImageSurface(cairo.FORMAT_RGB24, int(width),
                                      int(height))
 
+    surface_i = None
+    fill = kwargs.pop('fill', 1)
+
     for column_i, offset_i in column_offsets.iteritems():
         lines_i = df_data[column_i]
 
-        font_i, df_sizes_i = fit_text(lines_i, font=font, **kwargs)
+        font_i, df_sizes_i = fit_text(lines_i, font=font, **fit_text_kwargs)
 
         slack_i = column_widths[column_i] - df_sizes_i.width.max()
 
@@ -426,9 +432,12 @@ def render_frame_text(df_data, width, font='Serif 12', column_padding=.1,
             offset_i += slack_i
 
         # Write text for "i"th column to the common surface.
+        # XXX Only draw fill on **first** iteration to avoid drawing over
+        # previous text.
         shape_i, surface_i = render_text(lines_i, font=font,
                                          offset=(offset_i, 0), align=align,
-                                         stroke=1, fill=None,
-                                         surface=surface, **kwargs)
+                                         surface=surface, fill=fill
+                                         if surface_i is None else None,
+                                         **kwargs)
     shape = np.array([width, height]) * UREG.pixel
     return shape, surface

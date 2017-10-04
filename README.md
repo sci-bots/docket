@@ -30,6 +30,27 @@ The code above results in the following output:
 
 **Note: Any system font name may be specified, e.g., `font='Arial'`.**
 
+The optional **`fill` and `stroke` arguments** (as RGB color tuples) may be used to
+change the **background** fill color and **text stroke** color, respectively.
+
+For example:
+
+```python
+>>> shape, surface = docket.render_text('hello, world!', width=600,
+...                                     fill=(1, 0, 0), stroke=(0, 0, 1))
+```
+
+results in the following output:  
+![Fill and stroke options](docs/images/fill-stroke-options.png)
+
+### Copy resulting surface image to system clipboard
+
+```python
+>>> import docket.util
+>>>
+>>> docket.util.to_clipboard(surface)
+```
+
 ### Render list of strings
 
 ```python
@@ -45,7 +66,7 @@ The code above results in the following output:
 >>> import pandas as pd
 >>>
 >>>
->>> width = 600  # Explicit width in pixels
+>>> width = 250  # Explicit width in pixels
 >>>
 >>> df_data = pd.DataFrame([['Callie', 'Ernst'],
 ...                         ['Polly', 'Guerrero'],
@@ -53,8 +74,11 @@ The code above results in the following output:
 ...                         ['Tomasa', 'Rivera']],
 ...                         columns=['first_name', 'last_name'])
 >>>
->>> shape, surface = docket.render_frame_text(df_data, width, font='Serif')
+>>> shape, surface = docket.render_frame_text(df_data, width)
 ```
+
+The code above results in the following output:  
+![Data table](docs/images/data-table.png)
 
 ### Specify width as `pint` quantity
 
